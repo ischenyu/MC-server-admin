@@ -67,10 +67,6 @@ def verify_password(input_password, stored_password):
         salt = parts[2]       # 盐值
         hashed_password = parts[3]  # 哈希值
 
-        print(f"Algorithm: {algorithm}")
-        print(f"Salt: {salt}")
-        print(f"Stored Hashed Password: {hashed_password}")
-
         # 计算输入密码的哈希值
         input_hashed = compute_hash(input_password, salt)
         print(f"Input Hashed Password: {input_hashed}")

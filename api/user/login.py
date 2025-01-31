@@ -20,7 +20,7 @@ auth = HTTPTokenAuth(scheme='Bearer')
 
 # 生成 token 的函数
 def generate_token(username):
-    s = TimedSerializer(login_url.secret_key, expires_in=3600)  # token 有效期为 1 小时
+    s = TimedSerializer(login_url.secret_key)  # token 有效期为 1 小时
     return s.dumps({'username': username})
 
 # 验证 token 的函数
