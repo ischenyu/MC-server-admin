@@ -21,8 +21,18 @@ class SERVER_Config(object):
 
 # Redis connection config
 class REDIS_Config(object):
-    HOST = "localhost"
+    HOST = "192.168.1.2"
     PORT = 6379
     DB = 0
     PASSWORD = "Dingtalk1234561017"
+
+class USER_MANAGE_Config(object):
+    CAPTCHA_TIMEOUT_TIME = 600000
+
+class EMAIL_Config(object):
+    KEY = 're_TRqawMh1_5wLdr6z8L5f777nk9t9yr7aN'
+    FROM = 'HuTao@alistnas.top'
+    HOST = "smtp.resend.com"
+    PORT = 587
+    USERNAME = "resend"
 
