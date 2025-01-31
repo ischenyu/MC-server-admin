@@ -36,6 +36,13 @@ def verify_token(token):
 # 登录路由
 @login_url.route("/api/user/login/username", methods=["POST"])
 def login():
+
+    """
+    :return data: 获取前端返回的数据
+    :return cookie: Cookie
+    :return return: 返回数据 (Type: Json)
+    """
+
     try:
         data = request.get_json()
     except Exception as e:

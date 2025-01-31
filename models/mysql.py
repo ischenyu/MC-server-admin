@@ -3,6 +3,7 @@ author: Shan Chenyu (abb1234aabb@gmail.com)
 Description: Function of connection to MySQL and password verification.
 """
 
+import time
 import hashlib
 import logging
 import pymysql
@@ -105,6 +106,50 @@ def login_username(username, input_password):
             else:
                 logger.info(f"登录失败: 用户名 {username} 或密码错误")
                 return False
+
+    except pymysql.MySQLError as e:
+        logger.error(f"数据库错误: {e}")
+        return False
+    except Exception as e:
+        logger.error(f"未知错误: {e}")
+        return False
+
+def add_user(username, password, email, ip):
+    """
+    插入新用户到数据库。
+
+    :param username: 用户名
+    :param password: 用户密码（明文）
+    :param email: 用户邮箱
+    :return: 如果插入成功返回 True，否则返回 False
+    """
+    try:
+        # 生成盐值（这里使用简单的随机字符串作为示例）
+        salt = "randomsalt123"
+        time_stamp = int(time.time())
+        # 第一次哈希：SHA256(password)
+        first_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+        # 拼接第一次哈希结果和盐值
+        combined = first_hash + salt
+        # 第二次哈希：SHA256(combined)
+        final_hash = hashlib.sha256(combined.encode('utf-8')).hexdigest()
+        # 返回完整哈希值
+        hashed_password =  f"$SHA${salt}${final_hash}"
+
+        # 使用上下文管理器管理数据库连接
+        with DB_CONFIG.cursor() as cursor:
+            # 插入用户到数据库
+            sql = """
+            INSERT INTO authme (username, realname, password, ip, lastlogin,x ,y, z,world, regdate, regip, email)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(sql, (username, username, hashed_password, ip, time_stamp, 0, 0, 0, 'world', time_stamp, ip, email))
+
+        # 提交事务
+        DB_CONFIG.commit()
+
+        logger.info(f"用户 {username} 插入成功")
+        return True
 
     except pymysql.MySQLError as e:
         logger.error(f"数据库错误: {e}")
