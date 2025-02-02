@@ -3,8 +3,8 @@ author: Shan Chenyu (abb1234aabb@gmail.com)
 Description: Function of connection to MySQL and password verification.
 """
 
-import secrets
 import datetime
+import os
 import time
 import hashlib
 import logging
@@ -127,7 +127,7 @@ def add_user(username, password, email, ip):
     """
     try:
         # 生成盐值
-        salt = secrets.token_hex(16)
+        salt = os.urandom(16).hex()
         time_stamp = int(datetime.datetime.now().timestamp() * 1000)
         # 第一次哈希：SHA256(password)
         first_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
