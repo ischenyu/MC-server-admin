@@ -15,16 +15,20 @@ def register():
     try:
         data = request.get_json()
         username = data['username']
-        email = data["username"]
+        email = data["email"]
         password = data["password"]
         captcha = data["captcha"]
         ip = request.headers.get('X-Forwarded-For')
     except Exception as e:
-        return jsonify({"code": 500, "msg": str(e)})
-    if redisdb.verify_captcha(email, captcha) and mysql.add_user(username, email, ip, password):
-        return jsonify({"code": 200})
+        return jsonify({"code": 500, "msg": str(e)}), 500
+    if redisdb.verify_captcha(email, captcha) :
+        if mysql.add_user(username, password, email, ip):
+            return jsonify({"code": 200})
+        else:
+            return jsonify({"code": 400}), 400
     else:
-        return jsonify({"code": 400})
+        return jsonify({"code": 400, "message": "Captcha code is wrong"}), 400
+
 
 
 @register_url.route('/api/user/register/get_captcha', methods=['GET'])
